@@ -1,0 +1,13 @@
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+sqlalchemy==2.0.35
+pymysql==1.1.1
+pydantic==2.9.2
+python-multipart==0.0.20
+pydantic-settings==2.6.1
+cryptography==43.0.1
+
+# 遥感与栅格数据处理依赖
+numpy==2.1.3
+shapely==2.0.6
+rasterio==1.4.3

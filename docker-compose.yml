@@ -1,0 +1,50 @@
+services:
+  carboncount:
+    build: .
+    container_name: carboncount-app
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      TZ: Asia/Shanghai
+      PYTHONUNBUFFERED: "1"
+      # 通过环境变量覆盖 settings.Settings 中的默认值
+      DATABASE_USERNAME: ShuTanUser
+      DATABASE_PASSWORD: STuser1234!
+      DATABASE_HOST: db
+      DATABASE_PORT: "3306"
+      DATABASE_NAME: CarbonCountTestDB
+    volumes:
+      - ./logs:/app/logs
+      # NDVI 数据与索引数据库（挂载到 extract_ndvi_ts.py 使用的目录）
+      - ./data/hls_data:/var/www/carbon_count/scripts/hls_data
+      # 净碳排放 TIF 数据（挂载到 extract_net_carbon_emission.py 使用的目录）
+      - ./data/flux:/var/www/carbon_count/scripts
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    container_name: carboncount-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: CarbonCountTestDB
+      MYSQL_USER: ShuTanUser
+      MYSQL_PASSWORD: STuser1234!
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+
